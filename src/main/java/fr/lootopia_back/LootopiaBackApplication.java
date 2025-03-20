@@ -9,5 +9,4 @@ public class LootopiaBackApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(LootopiaBackApplication.class, args);
 	}
-
 }
