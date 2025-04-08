@@ -4,7 +4,6 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,13 +23,6 @@ public class UserController {
 
   @Autowired
   private UserService userService;
-
-  // Endpoint pour récupérer tous les utilisateurs (admin uniquement)
-  @GetMapping
-  @PreAuthorize("hasRole('ADMIN')")
-  public ResponseEntity<?> getAllUsers() {
-    return ResponseEntity.ok(userService.getAllUsers());
-  }
 
   // Endpoint pour récupérer un utilisateur par son nom d'utilisateur
   @GetMapping("/{username}")
