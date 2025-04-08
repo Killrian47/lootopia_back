@@ -1,10 +1,12 @@
 package fr.lootopia_back.controller;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,16 +25,20 @@ public class UserController {
   @Autowired
   private UserService userService;
 
+  // Endpoint pour récupérer tous les utilisateurs (admin uniquement)
   @GetMapping
-  public List<User> getAllUsers() {
-    return userService.getAllUsers();
+  @PreAuthorize("hasRole('ADMIN')")
+  public ResponseEntity<?> getAllUsers() {
+    return ResponseEntity.ok(userService.getAllUsers());
   }
 
+  // Endpoint pour récupérer un utilisateur par son nom d'utilisateur
   @GetMapping("/{username}")
   public Optional<User> getUser(@PathVariable String username) {
     return userService.getUserByUsername(username);
   }
 
+  // Endpoint pour créer un nouvel utilisateur
   @PostMapping
   public ResponseEntity<?> createUser(@RequestBody User user) {
 
@@ -52,9 +58,21 @@ public class UserController {
     return ResponseEntity.ok(savedUser);
   }
 
+  // Supprimer son propre compte
   @DeleteMapping("/{id}")
   public void deleteUser(@PathVariable Long id) {
     userService.deleteUser(id);
     System.out.println("User with id " + id + " has been deleted");
+  }
+
+  // Endpoint pour récupérer les informations de l'utilisateur connecté
+  @GetMapping("/me")
+  public ResponseEntity<?> getCurrentUser(@AuthenticationPrincipal UserDetails userDetails) {
+    if (userDetails == null) {
+      return ResponseEntity.status(401).body("Utilisateur non connecté");
+    }
+
+    return ResponseEntity.ok("Connecté en tant que : " + userDetails.getUsername()
+        + ", rôles : " + userDetails.getAuthorities());
   }
 }
