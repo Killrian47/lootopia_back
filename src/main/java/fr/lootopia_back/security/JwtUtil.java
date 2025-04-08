@@ -1,14 +1,14 @@
 package fr.lootopia_back.security;
 
-import java.util.Date;
-
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Component;
-
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.nio.charset.StandardCharsets;
+import java.security.Key;
+import java.util.Date;
 
 @Component
 public class JwtUtil {
@@ -16,21 +16,25 @@ public class JwtUtil {
   @Value("${jwt.secret}")
   private String jwtSecret;
 
-  private final long jwtExpirationMs = 86400000; // 1 jour
+  private final long EXPIRATION_TIME = 86400000; // 1 jour
+
+  private Key getSigningKey() {
+    return Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
+  }
 
   public String generateToken(UserDetails userDetails) {
     return Jwts.builder()
         .setSubject(userDetails.getUsername())
         .claim("role", userDetails.getAuthorities().iterator().next().getAuthority())
         .setIssuedAt(new Date())
-        .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
-        .signWith(Keys.hmacShaKeyFor(jwtSecret.getBytes()), SignatureAlgorithm.HS256)
+        .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+        .signWith(getSigningKey(), SignatureAlgorithm.HS256)
         .compact();
   }
 
   public String getUsernameFromToken(String token) {
     return Jwts.parserBuilder()
-        .setSigningKey(jwtSecret.getBytes())
+        .setSigningKey(getSigningKey())
         .build()
         .parseClaimsJws(token)
         .getBody()
@@ -39,9 +43,10 @@ public class JwtUtil {
 
   public boolean validateToken(String token) {
     try {
-      Jwts.parserBuilder().setSigningKey(jwtSecret.getBytes()).build().parseClaimsJws(token);
+      Jwts.parserBuilder().setSigningKey(getSigningKey()).build().parseClaimsJws(token);
       return true;
-    } catch (Exception e) {
+    } catch (JwtException e) {
+      System.out.println("❌ Token invalide : " + e.getMessage());
       return false;
     }
   }

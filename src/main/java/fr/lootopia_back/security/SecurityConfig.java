@@ -17,17 +17,26 @@ public class SecurityConfig {
   @Autowired
   private JwtAuthenticationFilter jwtAuthenticationFilter;
 
+  @Autowired
+  private CustomAccessDeniedHandler accessDeniedHandler;
+
   @Bean
-  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+  public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http
         .csrf(csrf -> csrf.disable())
         .authorizeHttpRequests(auth -> auth
             .requestMatchers("/api/auth/**").permitAll()
+            .requestMatchers("/api/users").hasRole("ADMIN")
+            .requestMatchers("/api/admin/**").hasRole("ADMIN")
+            .requestMatchers("/api/me").authenticated()
             .anyRequest().authenticated())
-        .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+        .exceptionHandling(exceptions -> exceptions
+            .accessDeniedHandler(accessDeniedHandler) // 👈 ici
+        )
+        .sessionManagement(session -> session
+            .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
     http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-
     return http.build();
   }
 
