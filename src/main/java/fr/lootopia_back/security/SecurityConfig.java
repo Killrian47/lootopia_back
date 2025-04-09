@@ -31,6 +31,8 @@ public class SecurityConfig {
             .requestMatchers("/api/me").authenticated()
             .requestMatchers("/api/treasure-hunts/all").authenticated()
             .requestMatchers("/api/treasure-hunts").hasAnyRole("ORGANIZER", "ADMIN")
+            .requestMatchers("/api/treasure-hunts/**").authenticated()
+            .requestMatchers("/api/treasure-hunt-participants/**").permitAll()
             .anyRequest().authenticated())
         .exceptionHandling(exceptions -> exceptions
             .accessDeniedHandler(accessDeniedHandler))
