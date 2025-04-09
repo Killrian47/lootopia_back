@@ -30,6 +30,22 @@ Lootopia Back est le backend du projet Lootopia, une application de chasse au tr
 ## Installation
 
 1. Clonez le dépôt :
-   ```bash
-   git clone <url-du-repo>
-   cd lootopia_back
+  ```bash
+  git clone <url-du-repo>
+  cd lootopia_back
+  ```
+2. Configurez les variables d'environnements dans un fichier :
+  ```bash
+  SPRING_DATASOURCE_URL=<votre-base-de-données>
+  SPRING_DATASOURCE_USERNAME=<votre-nom-utilisateur>
+  SPRING_DATASOURCE_PASSWORD=<votre-mot-de-passe>
+  JWT_SECRET=<votre-clé-secrète>
+  ```
+3. Installez les dépendances Maven :
+  ```bash
+  ./mvnw clean install
+  ```
+4. Lancez l'application :
+  ```bash
+  ./mvnw spring-boot:run
+  ```
