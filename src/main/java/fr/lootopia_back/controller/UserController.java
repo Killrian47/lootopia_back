@@ -3,6 +3,7 @@ package fr.lootopia_back.controller;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import fr.lootopia_back.model.User;
 import fr.lootopia_back.service.UserService;
@@ -53,6 +55,10 @@ public class UserController {
   // Supprimer son propre compte
   @DeleteMapping("/{id}")
   public void deleteUser(@PathVariable Long id) {
+    Optional<User> currentUser = userService.getCurrentUser();
+    if (currentUser.isEmpty() || !currentUser.get().getId().equals(id)) {
+      throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You can only delete your own account");
+    }
     userService.deleteUser(id);
     System.out.println("User with id " + id + " has been deleted");
   }

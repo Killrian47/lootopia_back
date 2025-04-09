@@ -29,10 +29,11 @@ public class SecurityConfig {
             .requestMatchers("/api/users").hasRole("ADMIN")
             .requestMatchers("/api/admin/**").hasRole("ADMIN")
             .requestMatchers("/api/me").authenticated()
+            .requestMatchers("/api/treasure-hunts/all").authenticated()
+            .requestMatchers("/api/treasure-hunts").hasAnyRole("ORGANIZER", "ADMIN")
             .anyRequest().authenticated())
         .exceptionHandling(exceptions -> exceptions
-            .accessDeniedHandler(accessDeniedHandler) // 👈 ici
-        )
+            .accessDeniedHandler(accessDeniedHandler))
         .sessionManagement(session -> session
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
