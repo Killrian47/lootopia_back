@@ -34,7 +34,7 @@ Lootopia Back est le backend du projet Lootopia, une application de chasse au tr
   git clone <url-du-repo>
   cd lootopia_back
   ```
-2. Configurez les variables d'environnements dans un fichier :
+2. Configurez les variables d'environnement dans un fichier :
   ```bash
   SPRING_DATASOURCE_URL=<votre-base-de-données>
   SPRING_DATASOURCE_USERNAME=<votre-nom-utilisateur>
