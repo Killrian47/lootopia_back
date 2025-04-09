@@ -53,6 +53,10 @@ public class UserController {
   // Supprimer son propre compte
   @DeleteMapping("/{id}")
   public void deleteUser(@PathVariable Long id) {
+    Optional<User> currentUser = userService.getCurrentUser();
+    if (currentUser.isEmpty() || !currentUser.get().getId().equals(id)) {
+      throw new IllegalArgumentException("You can only delete your own account");
+    }
     userService.deleteUser(id);
     System.out.println("User with id " + id + " has been deleted");
   }

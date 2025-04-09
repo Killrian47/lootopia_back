@@ -1,5 +1,7 @@
 package fr.lootopia_back.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -20,6 +22,7 @@ public class User {
   private String username;
 
   @Column(name = "password", nullable = false)
+  @JsonIgnore
   private String password;
 
   @Column(name = "email", nullable = false, unique = true)

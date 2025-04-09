@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import fr.lootopia_back.model.User;
@@ -39,5 +40,14 @@ public class UserService {
 
   public void deleteUser(Long id) {
     userRepository.deleteById(id);
+  }
+
+  public Optional<User> getCurrentUser() {
+    String email = SecurityContextHolder.getContext().getAuthentication().getName();
+    Optional<User> currentUser = userRepository.findByEmail(email);
+    if (currentUser.isEmpty()) {
+      throw new RuntimeException("Pas d'utilisateur connecté");
+    }
+    return currentUser;
   }
 }
