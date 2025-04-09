@@ -64,9 +64,9 @@ public class TreasureHuntController {
       treasureHuntParticipantService.registerUserToHunt(userId, huntId);
       return ResponseEntity.ok("User registered successfully to the hunt");
     } catch (Exception e) {
+      logger.error("Error registering user to hunt", e);
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-          .body("Error registering user to hunt: " + e.getMessage());
-    }
+          .body("An error occurred while processing the request.");
   }
 
 }
