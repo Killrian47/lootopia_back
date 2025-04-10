@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.lootopia_back.model.TreasureHunt;
 import fr.lootopia_back.model.User;
@@ -29,6 +31,8 @@ public class TreasureHuntController {
 
   @Autowired
   private UserService userService;
+
+  private static final Logger logger = LoggerFactory.getLogger(TreasureHuntController.class);
 
   @Autowired
   private TreasureHuntParticipantService treasureHuntParticipantService;
@@ -67,6 +71,6 @@ public class TreasureHuntController {
       logger.error("Error registering user to hunt: {}", e.getMessage(), e);
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
           .body("An error occurred while processing the request.");
+    }
   }
-
 }
