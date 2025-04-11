@@ -11,5 +11,7 @@ import fr.lootopia_back.model.User;
 public interface UserRepository extends JpaRepository<User, Long> {
   User findByUsername(String username);
 
+  User findById(long id);
+
   Optional<User> findByEmail(String email);
 }
