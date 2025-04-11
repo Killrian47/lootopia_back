@@ -34,6 +34,7 @@ public class SecurityConfig {
             .requestMatchers("/api/treasure-hunts/**").authenticated()
             .requestMatchers("/api/treasure-hunt-participants/**").permitAll()
             .requestMatchers("/api/steps/**").authenticated()
+            .requestMatchers("/api/steps-validation/**").authenticated()
             .anyRequest().authenticated())
         .exceptionHandling(exceptions -> exceptions
             .accessDeniedHandler(accessDeniedHandler))
