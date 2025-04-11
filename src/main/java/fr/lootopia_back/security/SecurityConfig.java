@@ -25,16 +25,23 @@ public class SecurityConfig {
     http
         .csrf(csrf -> csrf.disable())
         .authorizeHttpRequests(auth -> auth
+            // Allow all requests for authentication and registration endpoints
             .requestMatchers("/api/auth/**").permitAll()
-            .requestMatchers("/api/users").hasRole("ADMIN")
-            .requestMatchers("/api/admin/**").hasRole("ADMIN")
+
+            // Allow all requests for public endpoints
             .requestMatchers("/api/me").authenticated()
             .requestMatchers("/api/treasure-hunts/all").authenticated()
-            .requestMatchers("/api/treasure-hunts").hasAnyRole("ORGANIZER", "ADMIN")
             .requestMatchers("/api/treasure-hunts/**").authenticated()
             .requestMatchers("/api/treasure-hunt-participants/**").permitAll()
             .requestMatchers("/api/steps/**").authenticated()
             .requestMatchers("/api/steps-validation/**").authenticated()
+
+            // Allow all requests for roles ADMIN and ORGANIZER
+            .requestMatchers("/api/treasure-hunts").hasAnyRole("ORGANIZER", "ADMIN")
+
+            // Admin endpoints
+            .requestMatchers("/api/users").hasRole("ADMIN")
+            .requestMatchers("/api/admin/**").hasRole("ADMIN")
             .anyRequest().authenticated())
         .exceptionHandling(exceptions -> exceptions
             .accessDeniedHandler(accessDeniedHandler))
