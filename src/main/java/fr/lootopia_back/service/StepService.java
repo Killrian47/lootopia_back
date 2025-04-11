@@ -20,8 +20,9 @@ public class StepService {
   }
 
   public Step addStepToHunt(Long treasureHuntId, Step step) {
-    if (treasureHuntService.findById(treasureHuntId).isPresent()) {
-      step.setTreasureHunt(treasureHuntService.findById(treasureHuntId).get());
+    var treasureHuntOptional = treasureHuntService.findById(treasureHuntId);
+    if (treasureHuntOptional.isPresent()) {
+      step.setTreasureHunt(treasureHuntOptional.get());
       return stepRepository.save(step);
     } else {
       throw new IllegalArgumentException("Treasure Hunt not found");
