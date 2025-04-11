@@ -4,8 +4,10 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
@@ -44,12 +46,8 @@ public class TreasureHunt {
   @JoinColumn(name = "organizer_id")
   private User organizer;
 
-  /*
-   * @OneToMany(mappedBy = "treasureHunt", cascade = CascadeType.ALL,
-   * orphanRemoval = true)
-   * private List<Cache> caches;
-   */
+  @OneToMany(mappedBy = "treasureHunt", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  @JsonManagedReference
+  private List<Step> steps;
 
-  // Getters et setters
-  // Constructeurs
 }
