@@ -1,6 +1,7 @@
 package fr.lootopia_back.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -27,13 +28,13 @@ public class TreasureHuntParticipantService {
     this.huntRepository = huntRepository;
   }
 
-  public void registerUserToHunt(Long userId, Long huntId) {
-    User user = userRepository.findById(userId).orElseThrow();
+  public void registerUserToHunt(Optional<User> user, Long huntId) {
+    User userNonOtptional = userRepository.findById(user.get().getId()).orElseThrow();
     TreasureHunt hunt = huntRepository.findById(huntId).orElseThrow();
 
-    if (!participantRepository.existsByUserAndTreasureHunt(user, hunt)) {
+    if (!participantRepository.existsByUserAndTreasureHunt(userNonOtptional, hunt)) {
       TreasureHuntParticipant participant = new TreasureHuntParticipant();
-      participant.setUser(user);
+      participant.setUser(userNonOtptional);
       participant.setTreasureHunt(hunt);
       participantRepository.save(participant);
     }
