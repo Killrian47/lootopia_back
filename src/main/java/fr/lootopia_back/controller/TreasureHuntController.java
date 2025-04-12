@@ -61,11 +61,12 @@ public class TreasureHuntController {
     return treasureHuntService.findById(id).orElse(null);
   }
 
-  @PostMapping("/{huntId}/register/{userId}")
+  @PostMapping("/{huntId}/register")
   public ResponseEntity<?> registerUserToHunt(
-      @PathVariable Long huntId, @PathVariable Long userId) {
+      @PathVariable Long huntId) {
     try {
-      treasureHuntParticipantService.registerUserToHunt(userId, huntId);
+      Optional<User> userOptional = userService.getCurrentUser();
+      treasureHuntParticipantService.registerUserToHunt(userOptional, huntId);
       return ResponseEntity.ok("User registered successfully to the hunt");
     } catch (Exception e) {
       logger.error("Error registering user to hunt: {}", e.getMessage(), e);
