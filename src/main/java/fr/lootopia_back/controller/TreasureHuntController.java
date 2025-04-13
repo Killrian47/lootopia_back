@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 
 import fr.lootopia_back.model.TreasureHunt;
 import fr.lootopia_back.model.User;
+import fr.lootopia_back.service.StepService;
 import fr.lootopia_back.service.TreasureHuntParticipantService;
 import fr.lootopia_back.service.TreasureHuntService;
 import fr.lootopia_back.service.UserService;
@@ -32,10 +33,13 @@ public class TreasureHuntController {
   @Autowired
   private UserService userService;
 
-  private static final Logger logger = LoggerFactory.getLogger(TreasureHuntController.class);
-
   @Autowired
   private TreasureHuntParticipantService treasureHuntParticipantService;
+
+  @Autowired
+  private StepService stepService;
+
+  private static final Logger logger = LoggerFactory.getLogger(TreasureHuntController.class);
 
   @GetMapping("/all")
   public List<TreasureHunt> getAllTreasureHunt() {
@@ -61,7 +65,7 @@ public class TreasureHuntController {
     return treasureHuntService.findById(id).orElse(null);
   }
 
-  @PostMapping("/{huntId}/register")
+  @PostMapping("/{huntId}/join")
   public ResponseEntity<?> registerUserToHunt(
       @PathVariable Long huntId) {
     try {
@@ -73,5 +77,13 @@ public class TreasureHuntController {
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
           .body("An error occurred while processing the request.");
     }
+  }
+
+  @GetMapping("/{huntId}/steps")
+  public ResponseEntity<List<?>> getSteps(@PathVariable Long huntId) {
+    if (stepService.getStepsByHuntId(huntId).isEmpty()) {
+      return ResponseEntity.status(200).body(List.of("No steps found for this hunt"));
+    }
+    return ResponseEntity.ok(stepService.getStepsByHuntId(huntId));
   }
 }
