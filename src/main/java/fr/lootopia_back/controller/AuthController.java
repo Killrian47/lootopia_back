@@ -1,5 +1,7 @@
 package fr.lootopia_back.controller;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -38,6 +40,14 @@ public class AuthController {
 
   @PostMapping("/register")
   public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
+    if (userRepository.existsByEmail(request.email())) {
+      return ResponseEntity.badRequest()
+          .body(Map.of("message", "Un compte est déjà associé avec cet email"));
+    }
+    if (userRepository.existsByUsername(request.username())) {
+      return ResponseEntity.badRequest()
+          .body(Map.of("message", "Ce nom d'utilisateur est déjà utilisé, veuillez en choisir un autre"));
+    }
     User user = new User();
     user.setEmail(request.email());
     user.setPassword(passwordEncoder.encode(request.password()));
