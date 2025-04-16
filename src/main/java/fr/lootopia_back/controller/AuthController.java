@@ -59,10 +59,13 @@ public class AuthController {
 
   @PostMapping("/login")
   public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+    User user = userRepository.findByEmail(request.email())
+        .orElseThrow(() -> new RuntimeException("User not found"));
+
     Authentication authentication = authenticationManager.authenticate(
         new UsernamePasswordAuthenticationToken(request.email(), request.password()));
     UserDetails userDetails = (UserDetails) authentication.getPrincipal();
     String token = jwtUtil.generateToken(userDetails);
-    return ResponseEntity.ok(new JwtResponse(token));
+    return ResponseEntity.ok(new JwtResponse(token, user));
   }
 }

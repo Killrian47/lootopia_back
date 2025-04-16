@@ -1,5 +1,7 @@
 package fr.lootopia_back.dto;
 
-public record JwtResponse(String token) {
+import fr.lootopia_back.model.User;
+
+public record JwtResponse(String token, User user) {
 
 }
