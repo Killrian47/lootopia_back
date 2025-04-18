@@ -21,9 +21,16 @@ import fr.lootopia_back.model.Role;
 import fr.lootopia_back.model.User;
 import fr.lootopia_back.repository.UserRepository;
 import fr.lootopia_back.security.JwtUtil;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/api/auth")
+@Tag(name = "Authentification", description = "Endpoints pour l'authentification des utilisateurs")
 public class AuthController {
 
   @Autowired
@@ -38,6 +45,11 @@ public class AuthController {
   @Autowired
   private PasswordEncoder passwordEncoder;
 
+  @Operation(summary = "Inscription d'un nouvel utilisateur", description = "Permet de créer un nouveau compte utilisateur")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "Inscription réussie"),
+      @ApiResponse(responseCode = "400", description = "Email déjà utilisé ou nom d'utilisateur déjà pris")
+  })
   @PostMapping("/register")
   public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
     if (userRepository.existsByEmail(request.email())) {
@@ -57,6 +69,12 @@ public class AuthController {
     return ResponseEntity.ok("Utilisateur enregistré");
   }
 
+  @Operation(summary = "Connexion utilisateur", description = "Authentifie un utilisateur et retourne un token JWT")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "Authentification réussie", content = @Content(schema = @Schema(implementation = JwtResponse.class))),
+      @ApiResponse(responseCode = "401", description = "Identifiants invalides"),
+      @ApiResponse(responseCode = "404", description = "Utilisateur non trouvé")
+  })
   @PostMapping("/login")
   public ResponseEntity<?> login(@RequestBody LoginRequest request) {
     User user = userRepository.findByEmail(request.email())

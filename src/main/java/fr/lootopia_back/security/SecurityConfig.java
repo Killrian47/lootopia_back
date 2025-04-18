@@ -27,7 +27,11 @@ public class SecurityConfig {
         .authorizeHttpRequests(auth -> auth
             // Allow all requests for authentication and registration endpoints
             .requestMatchers("/api/auth/**").permitAll()
-
+            .requestMatchers("/",
+                "/swagger-ui/**",
+                "/swagger-ui.html",
+                "/v3/api-docs/**")
+            .permitAll()
             // Allow all requests for public endpoints
             .requestMatchers("/api/me").authenticated()
             .requestMatchers("/api/treasure-hunts/all").authenticated()
