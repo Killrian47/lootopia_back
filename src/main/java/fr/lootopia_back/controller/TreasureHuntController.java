@@ -86,4 +86,13 @@ public class TreasureHuntController {
     }
     return ResponseEntity.ok(stepService.getStepsByHuntId(huntId));
   }
+
+  @GetMapping("/{huntId}/participants")
+  public ResponseEntity<List<User>> getAllTreasureHuntParticipants(@PathVariable Long huntId) {
+    List<User> participants = treasureHuntParticipantService.getAllTreasureHuntParticipants(huntId);
+    if (participants.isEmpty()) {
+      return ResponseEntity.status(200).body(List.of());
+    }
+    return ResponseEntity.ok(participants);
+  }
 }
