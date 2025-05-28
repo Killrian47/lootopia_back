@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -74,6 +75,19 @@ public class TreasureHuntController {
       return ResponseEntity.ok("User registered successfully to the hunt");
     } catch (Exception e) {
       logger.error("Error registering user to hunt: {}", e.getMessage(), e);
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+          .body("An error occurred while processing the request.");
+    }
+  }
+
+  @DeleteMapping("/{huntId}/leave")
+  public ResponseEntity<?> unregisterUserFromHunt(@PathVariable Long huntId) {
+    try {
+      Optional<User> userOptional = userService.getCurrentUser();
+      treasureHuntParticipantService.unregisterUserFromHunt(userOptional, huntId);
+      return ResponseEntity.ok("User unregistered successfully from the hunt");
+    } catch (Exception e) {
+      logger.error("Error unregistering user from hunt: {}", e.getMessage(), e);
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
           .body("An error occurred while processing the request.");
     }
