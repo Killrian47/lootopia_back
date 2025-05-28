@@ -40,6 +40,15 @@ public class TreasureHuntParticipantService {
     }
   }
 
+  public void unregisterUserFromHunt(Optional<User> user, Long huntId) {
+    User userNonOtptional = userRepository.findById(user.get().getId()).orElseThrow();
+    TreasureHunt hunt = huntRepository.findById(huntId).orElseThrow();
+    TreasureHuntParticipant participant = participantRepository
+        .findByUserAndTreasureHunt(userNonOtptional, hunt);
+    participantRepository.delete(participant);
+
+  }
+
   public List<User> getAllTreasureHuntParticipants(Long id) {
     return participantRepository.findAllUsersByTreasureHunt(id);
   }

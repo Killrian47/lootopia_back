@@ -15,6 +15,8 @@ import fr.lootopia_back.model.User;
 public interface TreasureHuntParticipantRepository extends JpaRepository<TreasureHuntParticipant, Long> {
   boolean existsByUserAndTreasureHunt(User user, TreasureHunt treasureHunt);
 
+  TreasureHuntParticipant findByUserAndTreasureHunt(User user, TreasureHunt treasureHunt);
+
   @Query("SELECT p.user FROM TreasureHuntParticipant p WHERE p.treasureHunt.id = :id")
   List<User> findAllUsersByTreasureHunt(@Param("id") Long treasureHuntId);
 }
