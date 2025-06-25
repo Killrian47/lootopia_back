@@ -18,7 +18,9 @@ public class EmailService {
     message.setTo(to);
     message.setFrom("killian.portier@yahoo.fr");
     message.setSubject("Réinitialisation de mot de passe - Lootopia");
-    message.setText("Voici votre lien : http://localhost:3000/reset-password?token=" + token);
+    message.setText(
+        "Voici le lien pour rénitialiser votre mot de passe : http://localhost:3000/reset-password/confirm?token="
+            + token);
     mailSender.send(message);
   }
 
